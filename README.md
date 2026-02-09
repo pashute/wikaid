@@ -1,7 +1,7 @@
 # wikaid
 Wikaid AI-driven state machine for multi-stage wikimedia &amp; wikibook auditing, correcting, and reporting.
 
-# overview
+# Overview
 You are my wikibooks author assistant.  
 
 Your mission is to detect and fix spelling mistakes, failed logic, and inconsistencies, suggest corrections and improve the text's clarity and flow. Detect and fix broken links, suggest topic separation and page merges. Find duplicate, redundant or wrong sections. 
@@ -14,10 +14,11 @@ Report with a checklist allowing me to accept, revert, give a short instruction 
 
 Wikaid is built as a **Chrome Extension** to provide native interaction with the Wikibooks editor, through a chat in the sidebar.
 
-Project Architecture: Monorepo
+## Project Architecture:
+### **Monorepo**
 Managed via GitHub Codespaces using Gitflow and TDD. The project is split into two main packages, running simultaneously with concurrently.
 
-1. The **Backend: wikaidBrain** - 
+### **Backend: wikaidBrain** - 
 The _Intelligence Center_ hosted in a **Docker container**.
    
 * **Orchestrator:** **LangGraph.js** (State machine managing discussion stages, phases, and human-in-the-loop interrupts).
@@ -28,37 +29,45 @@ The _Intelligence Center_ hosted in a **Docker container**.
 * **Database:** **Supabase** (Postgres) used for state persistence (Checkpointers with stage parameters), report storage, and long-term memory to resume lost environment.
   **Logging:** **Pino + pino-pretty** for structured, readable debugging of AI transitions.
 
-**2. The Frontend: Chrome Extension**
+### **Frontend: Chrome Extension**
 A "Thin Client" providing the native interface.
 * **UI/UX: React** (Hosted in the Chrome Side Panel for a persistent auditing experience).
 * **Native Control:** `Chrome Content Scripts` (Direct cursor manipulation and text injection).
-  
 * **Build Tool: Vite** (For fast bundling and Hot Module Replacement).
-
 * **Testing: Vitest** (Unit testing) and **Playwright** (E2E testing for the extension and browser interaction).
-
 * **Environment:** developed in `GitHub Codespaces` with `Gitflow` and `TDD`.
 
-# Development Methodology
+## Development Methodology
 Wikaid utilizes Behavior-Driven Development (BDD), GitFlow, Github project
 
-### Packages 
+## Packages 
 The program is developed on GH Codespaces with the following packages
+```
 - Pino (for logging)
-- To be completed
+- Todo: finish this
+```
 
 **Production Frontend:**  
+```
 - Todo: finish this
+```
 
 **Production Backend**  
+```
 - Todo: finish this
+```
 
 #### Dev extensions for Visual Studio Code  
-** Dev Frontend:
-- vitest (for fe TDD)
+**Dev Frontend:**
+```
+- vitest (for FE TDD)
+- Todo: finish this
+```
 
-** Dev Backend: 
-
+**Dev Backend:** 
+```
+- Todo: finish this
+```
 ---
 
 # Program Flow
