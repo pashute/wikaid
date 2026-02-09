@@ -77,9 +77,11 @@ The program is developed on GH Codespaces with the following packages
 
 1.3 ***Input stage:***  The analysis scope, general plan and extra instructions are received through a structured discussion. Once all the plan parameters  are gathered, a parameters json is given and if the user approves we begin the analysis and suggestion stage. 
 
-***Analysis stage:***  The program executes analysis and suggestion tasks in a structured segment. 
+1.4 ***Grounding stage:*** Before starting any research a grounding of the user's terminology is created by crawling the pages or website, and a mapping of it with  expert terminology from that domain of knowledge.  The output should be with correction suggestions and remarks.
+
+1.5 ***Analysis stage:***  The program executes analysis and suggestion tasks in a structured segment. 
 Each segment may, according to its definitions ask the user for clarifications and futher information. The output of this stage is a suggestions json.
 
-***Approval stage:*** The program presents all corrections in a structured discussion, accumulating the user's responses to its suggestions. 
+1.6 ***Approval stage:*** The program presents all corrections in a structured discussion, accumulating the user's responses to its suggestions. 
 
-***Action stage:*** The program steps the user through actions that allow it to correct the information or instruct the user to make the changes, according to the user's decisions, while warning if any information may be lost in the process. 
+1.7 ***Action stage:*** The program steps the user through actions that allow it to correct the information or instruct the user to make the changes, according to the user's decisions, while warning if any information may be lost in the process. 
