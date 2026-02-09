@@ -39,6 +39,7 @@ Wikaid utilizes Behavior-Driven Development (BDD), GitFlow, Github project
 The program is developed on GH Codespaces with the following packages
 # Wikaid Project Configuration: Tech Stack & Dev Ecosystem
 
+```
 # ---------------------------------------------------------
 # NPM PACKAGES
 # ---------------------------------------------------------
@@ -124,8 +125,7 @@ wikaid/
 │       │   ├── schema/     # Zod definitions for the 22-task mission
 │       │   └── types/      # Global Enums (e.g., a_rejected, a_aligned)
 │       └── package.json
-
-
+```
 
 # 2. Stage details:
 ## 2.1 Alignment phase for each stage and segment
