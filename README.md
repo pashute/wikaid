@@ -15,7 +15,7 @@ Report with a checklist allowing me to accept, revert, give a short instruction 
 
 Wikaid is built as a **Chrome Extension** to provide native interaction with the Wikibooks editor, through a chat in the sidebar.
 
-* **Orchestrator:** `LangGraph.js` (State machine managing BDD cycles and user interrupts).
+* **Orchestrator:** `LangGraph.js` (State machine managing discussion stages and phases, with AI and user interactions and interupts).
 * **Intelligence:** `Google Gemini 2.0 Flash` (Large context window for full-book analysis).
 * **UI/UX:** `React` (Hosted in the **Chrome Side Panel** for persistent auditing).
 * **Database:** `Supabase` (Cloud PostgreSQL for report storage and state persistence).
