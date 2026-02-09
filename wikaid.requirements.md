@@ -2,7 +2,7 @@
 **Version:** 0.9
 **Description:** Created
 
-# wikaid
+# wikaid requirements
 Wikaid AI-driven chrome extension with state machine for multi-stage wikimedia &amp; wikibook auditing, correcting, and reporting.  Works with an AI chat controlling interface. 
 
 # 🛠 Technical Stack
