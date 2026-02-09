@@ -42,33 +42,93 @@ Wikaid utilizes Behavior-Driven Development (BDD), GitFlow, Github project
 
 ## Packages 
 The program is developed on GH Codespaces with the following packages
-```
-- Pino (for logging)
-- Todo: finish this
-```
+# Wikaid Project Configuration: Tech Stack & Dev Ecosystem
 
-**Production Frontend:**  
-```
-- Todo: finish this
-```
+# ---------------------------------------------------------
+# NPM PACKAGES
+# ---------------------------------------------------------
 
-**Production Backend**  
-```
-- Todo: finish this
-```
+shared_packages:
+  - id: typescript       # Strict typing across monorepo and shared enumerations
+  - id: zod              # Schema validation for AI JSON outputs and API contracts
+  - id: date-fns         # Immutable date/time management for audit logs
 
-#### Dev extensions for Visual Studio Code  
-**Dev Frontend:**
-```
-- vitest (for FE TDD)
-- Todo: finish this
-```
+frontend_packages:       # Chrome Extension (React + Vite)
+  - id: lucide-react     # Icon library for sidebar UI components
+  - id: @tanstack/react-query # Server-state sync between sidebar and Brain
+  - id: clsx             # Utility for constructing dynamic CSS class strings
+  - id: tailwind-merge   # Optimizes Tailwind class conflicts
 
-**Dev Backend:** 
-```
-- Todo: finish this
-```
----
+backend_packages:        # wikaidBrain (Hono + Node.js)
+  - id: @langchain/langgraph # State machine orchestrator for audit cycles
+  - id: @langchain/google-genai # Gemini 2.0 Flash integration for web research
+  - id: @supabase/supabase-js # Client for Postgres state store & Knowledge Graph
+  - id: hono             # Ultra-fast web framework for AI API endpoints
+  - id: ollama           # Interface for local Llama 3.2 inference
+
+# ---------------------------------------------------------
+# VS CODE EXTENSIONS (recommendations.json)
+# ---------------------------------------------------------
+
+shared_extensions:
+  - id: esbenp.prettier-vscode       # Code formatting consistency
+  - id: dbaeumer.vscode-eslint       # Linter for catching logic errors early
+  - id: usernamehw.errorlens         # Inline error highlighting
+  - id: github.copilot               # AI pair programming
+
+frontend_extensions:
+  - id: bradlc.vscode-tailwindcss    # IntelliSense for sidebar styling
+  - id: dsznajder.es7-react-js-snippets # React component boilerplates
+  - id: wallabyjs.console-ninja      # Real-time logs inside the editor
+
+backend_extensions:
+  - id: humao.rest-client            # Test Brain endpoints without a browser
+  - id: ms-azuretools.vscode-docker  # Manage Ollama and local DB containers
+  - id: qwtel.sqlite-viewer          # Visualizing local data caches
+
+wikaid/
+├── packages/
+│   ├── side/               # Wicked Side: Chrome Extension (React + Vite)
+│   │   ├── src/
+│   │   │   ├── background/ # Service worker for extension events
+│   │   │   ├── content/    # Content scripts (DOM injection)
+│   │   │   ├── sidebar/    # UI for the audit & discussion
+│   │   │   └── common/     # UI components
+│   │   └── package.json
+│   │
+│   ├── brain/              # wikaidBrain: LangGraph AI Orchestrator
+│   │   ├── src/
+│   │   │   ├── orchestrator/
+│   │   │   │   ├── discussion/
+│   │   │   │   │   ├── flow/      # Managing session state & history
+│   │   │   │   │   ├── topics/    # Segmenting the wikibook content
+│   │   │   │   │   ├── issues/    # Tracking detected problems
+│   │   │   │   │   ├── align/     # Detector and Aligner sub-modules
+│   │   │   │   │   ├── responder/ # Generating user-facing explanations
+│   │   │   │   │   └── executor/  # Finalizing approved changes
+│   │   │   │   └── stages/
+│   │   │   │       ├── input1/    # Wiki extraction & segmenting
+│   │   │   │       ├── ground2/   # Initial domain grounding
+│   │   │   │       ├── plan3/     # Planning the audit strategy
+│   │   │   │       ├── analyze4/  # Deep Audit Node:
+│   │   │   │       │   ├── accuracy/  # lingu, logic, src
+│   │   │   │       │   ├── structure/ # redundancy, organize
+│   │   │   │       │   └── expand/    # supplement, enrich
+│   │   │   │       ├── report5/   # Summarizing findings for side
+│   │   │   │       ├── approve6/  # Human-in-the-loop gate
+│   │   │   │       └── execute7/  # Pushing back to MediaWiki
+│   │   │   ├── knowledge/
+│   │   │   │   ├── tech/          # flash, llama, kg adapters
+│   │   │   │   └── bases/         # domain, discussion, lexicon, actions, revised
+│   │   │   └── index.ts    # Hono API entry point
+│   │   ├── tests/          # Vitest & Cucumber
+│   │   └── package.json
+│   │
+│   └── shared/             # Shared Logic & Contracts
+│       ├── src/
+│       │   ├── schema/     # Zod definitions for the 22-task mission
+│       │   └── types/      # Global Enums (e.g., a_rejected, a_aligned)
+│       └── package.json
 
 # Program Flow
 
@@ -95,7 +155,7 @@ Please note: The ```topic manager``` alignment of the current and planned topic 
 The parameters are gathered from the user input during the discussions, from the AI output, and from the wiki site analysis. See the ```issue analyzer``` details.
 
 1.5.4 ***Orchestrator states:*** The orchestrator's state machine manages several state cycles:
-   - **Stage states:**  1.Input, 2.Grounding, 3.Analysis-plan 4.Analysis, 5.Report, 6.Action-plan, 7.Action
+   - **Stage states:**  1.Input, 2.Ground, 3.Plan 4.Analyze, 5.Report, 6.Approve, 7.Action
    - **Phase states** (within each stage): See the stage details. 
    - **Alignment state:** 1.```talking``` - active listening , 2.```align``` - suggest alignment, 3.```aligning``` - in alignment session, 4. ```aligned``` - alignment accepted and ok to proceed.
    - ***Discussion flow object:***  The orchestrator manages the discussion using discussion flow data of ```discussed```, ```current``` and ```planned``` ```topic```s to be discussed.  The discussion flow is with planned topics and agreeing on the current topic is discussed during the alignment. 
@@ -116,7 +176,7 @@ Once in alignment session, the orchestrator's ***alignment*** module takes over 
 
 Finally, the terminology will be presented to the user in the alignment session, and after approved, will be merged with any existing embedded knowledge graphs for those topics, or a new kg will be created for this topic. See details below. 
 
-1.5 ***Analysis stage:***  The program executes analysis and suggestion tasks in a structured segment. 
+1.5 ***Analysis stage:***  The program executes analysis and suggestion tasks in a series of structured segments. 
 Each segment may, according to its definitions ask the user for clarifications and futher information. The output of this stage is a suggestions json.
 
 1.6 ***Approval stage:*** The program presents all corrections in a structured discussion, accumulating the user's responses to its suggestions. 
@@ -167,7 +227,7 @@ During the discussion with the user, the ```responder``` module uses subtle prob
    
    - 4. ```knowledge update```: The final result of an alignment session is passed to the knowledge manager for modifying and updating the current knowledge base with topics, terms and phrases.
    
-   - 5. For action plan stages (stage #3 analysis plan, stage #6 action plan) The final result of an alignment session is passed to the ```actions``` module which holds a final action plan with tasks, sequences, and execution paths with their tools and params. The actions is sent into the 
+   - 5. For action plan stages (stage #3 plan, stage #6 approve) The final result of an alignment session is passed to the ```actions``` module which holds a final action plan with tasks, sequences, and execution paths along with their tools and params. The actions object is sent into the executor module
 
 ## 2.2 Grounding Stage details
 2.2.1 The grounding stage consists of several phases run by the **```grounding```** module, along with the ```issues```, ```topics```, ```alignment```, and when talking to the user, with the ```responder``` module. 
