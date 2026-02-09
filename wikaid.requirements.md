@@ -16,6 +16,26 @@ Managed via GitHub Codespaces using Gitflow and TDD. The project is split into t
 ### **Side bar control**
 During the planning stages the sidebar has a chat interface which simulates (but is not) an AI agent chat, with a structured controlled interface, responding according to the stage and state of the conversation, notifying the user of state changes and planned topics, and interacting with the user's input, gathering instructions, confirming the analysis plan, reporting its findings, and finally approving and executing the changes to the site.  
 
+### **AI offload and hybrid computing** 
+The wikaid program saves the access to a large and capable (and expensive) LLM for the big analysis job, minimizing any interaction with it until necessary. For the long and detailed preparation process it uses a local LLM. 
+
+Even this local LLM (or SLM) is used as a component in logical action sequences, controlled by rule-based programming in the backend (brain) orchestrator, run with LangChain/LangGraph. 
+
+### **Mediawiki integration**
+For creating the report there must be at least the ability to read the wiki text, 
+best if as source code, and With the resulting report and user approval 
+we should be able to reach the locations in the mediawiki and even inject the corrected text in its place.
+
+## Operational requirements summary
+```
+  # Connectivity:
+  - id: bridge_api       # Must support MediaWiki text extraction and injection
+  - id: hybrid_ai        # Local Llama for control; Gemini Flash for grounding and wiki analysis
+  - id: sidebar_sync     # Frontend must use a stateful sync (React-Query) with the brain
+  - id: persistence      # All audit states, user approvals, and grounding knowledge base must be saved in Supabase
+   # Development DDD/BDD: 
+  - id: gherkin_parity   # Every mission task must have a corresponding Cucumber .feature
+````
 ### **Backend: wikaidBrain** - 
 The _Intelligence Center_ hosted in a **Docker container**.
    
