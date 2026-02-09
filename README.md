@@ -14,26 +14,44 @@ Report with a checklist allowing me to accept, revert, give a short instruction 
 ## 🛠 Technical Stack
 
 Wikaid is built as a **Chrome Extension** to provide native interaction with the Wikibooks editor, through a chat in the sidebar.
+aaaaaaaaaaaa
+Project Architecture: Monorepo
+Managed via GitHub Codespaces using Gitflow and TDD. The project is split into two main packages, running simultaneously with concurrently.
 
-* **Orchestrator:** `LangGraph.js` (State machine managing discussion stages and phases, with AI and user interactions and interupts).
-* **Intelligence:** 
-- For chat and instructions (Local): Gemini Nano (Built-in Chrome API for cost-free, low-latency).
-- For book analysis (Cloud): Google Gemini 2.0 Flash (High-performance API, 1M+ token context reasoning).
-* **UI/UX:** `React` (Hosted in the **Chrome Side Panel** for persistent auditing).
-* **Database:** `Supabase` (Cloud PostgreSQL for report storage and state persistence).
+1. The **Backend: wikaidBrain** - The **"Intelligence Center"** hosted in a Docker container.
+   
+* **Orchestrator:** **LangGraph**.js (State machine managing discussion stages, phases, and human-in-the-loop interrupts).
+* **API Framework:** **Hono** (Modern, lightweight, and TypeScript-native alternative to Express).
+* **Intelligence:**
+- For **chat** and instructions (Local): **Gemini Nano** (Built-in Chrome API for cost-free, low-latency).
+- For **book** analysis (Cloud): Google **Gemini 2.0 Flash** (High-performance API, 1M+ token context reasoning).
+* **Database:** **Supabase** (Postgres) used for state persistence (Checkpointers with stage parameters), report storage, and long-term memory to resume lost environment.
+  **Logging:** **Pino + pino-pretty** for structured, readable debugging of AI transitions.
+
+**2. The Frontend: Chrome Extension**
+A "Thin Client" providing the native interface.
+* **UI/UX: React** (Hosted in the Chrome Side Panel for a persistent auditing experience).
 * **Native Control:** `Chrome Content Scripts` (Direct cursor manipulation and text injection).
+  
+* **Build Tool: Vite** (For fast bundling and Hot Module Replacement).
+
+* **Testing: Vitest** (Unit testing) and **Playwright** (E2E testing for the extension and browser interaction).
+
 * **Environment:** developed in `GitHub Codespaces` with `Gitflow` and `TDD`.
 
-### Project persistance
-
-Supabase db persistance as remote checkpointer for LangGraph.js state machine, ensuring that stage, phase and parameters gathered and planned are preserved when environment is restarted. 
-
 # Development Methodology
-Wikaid utilizes Behavior-Driven Development (BDD) and a Sequential State Machine to ensure editorial precision. 
-If possible we will use CL/CD  and E2E testing.  
+Wikaid utilizes Behavior-Driven Development (BDD), GitFlow, Github project
 
 ### Packages 
-The program is developed on GH Codespaces with the following:  
+The program is developed on GH Codespaces with the following packages
+- **Logging:** 
+
+**Frontend:**  
+- vitest
+
+**Backend**
+
+
 
 #### Dev extensions for Visual Studio Code
 
