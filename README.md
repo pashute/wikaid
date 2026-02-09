@@ -10,20 +10,46 @@ Suggest completions, further reading sections and links. Check sources and sugge
 
 Report with a checklist allowing me to accept, revert, give a short instruction or mark as needing a separate discussion.
 
-# Core Methodology
-Wikaid utilizes Behavior-Driven Development (BDD) and a Sequential State Machine to ensure editorial precision. Each segment involves an initial Alignment Discussion to define scope, followed by Automated Execution with real-time user input as needed.
+# Tech stack
+## 🛠 Technical Stack
+
+Wikaid is built as a **Chrome Extension** to provide native interaction with the Wikibooks editor, through a chat in the sidebar.
+
+* **Orchestrator:** `LangGraph.js` (State machine managing BDD cycles and user interrupts).
+* **Intelligence:** `Google Gemini 2.0 Flash` (Large context window for full-book analysis).
+* **UI/UX:** `React` (Hosted in the **Chrome Side Panel** for persistent auditing).
+* **Database:** `Supabase` (Cloud PostgreSQL for report storage and state persistence).
+* **Native Control:** `Chrome Content Scripts` (Direct cursor manipulation and text injection).
+* **Environment:** developed in `GitHub Codespaces` with `Gitflow` and `TDD`.
+
+# Development Methodology
+Wikaid utilizes Behavior-Driven Development (BDD) and a Sequential State Machine to ensure editorial precision. 
+If possible we will use CL/CD  and E2E testing.  
+
+### Packages 
+The program is developed on GH Codespaces with the following:  
+
+#### Dev extensions for Visual Studio Code
+
+
+
+---
 
 # Program Flow
 
-1. Wikaid's interface works through a natural language chat controlling the workflow. 
+1. Wikaid's interface works through a ***natural language chat*** controlling the workflow and notifying the user of changes. 
 
-1.1 . ***Short chunks*** - long replies are cut into sections presented one by one only after user's ok to proceed. 
+1.1 . ***Stages, Phases, Short segments*** 
+- Each discussion is part of a stage (Input, Analysis, Report, Action) and its phases (Planning, Aligning, Doing)
+- During each stage the discussion accumulates the parameters needed for executing the planned actions of that stage.   
+- Long replies are cut into sections presented one by one only after the user's ok to proceed.
+- 
 
-1.2 ***Alignment discussions:*** 
+1.2 ***Alignment discussion phases:*** 
 
-- Each stage and substage ends with a summary of what will be next, probes for gaps of information still needed from the user, and a request for permission to proceed. (ok?,  continue?  etc.) 
+- Each stage and substage ends with an alignment phase: A summary of what will be next, probes for gaps of information still needed from the user, and a request for permission to proceed to the next stage. (ok?,  continue?  etc.) 
 
-- If remarks were given and were not asked to proceed, turn into an alignment discussion state, and wait for issues to be resolved and user to approve, before moving on. 
+- If remarks were given and there is no approval to proceed, turn this into an alignment discussion state, and wait for issues to be resolved and user to approve, before moving on. 
 
 1.3 ***Input stage:***  The analysis scope, general plan and extra instructions are received through a structured discussion. Once all the plan parameters  are gathered, a parameters json is given and if the user approves we begin the analysis and suggestion stage. 
 
@@ -32,8 +58,4 @@ Each segment may, according to its definitions ask the user for clarifications a
 
 ***Approval stage:*** The program presents all corrections in a structured discussion, accumulating the user's responses to its suggestions. 
 
-***Execution stage:*** The program steps the user through actions that allow it to correct the information according to the user's decisions. Warning if any information may be lost in the process. 
-
-
-
-
+***Action stage:*** The program steps the user through actions that allow it to correct the information or instruct the user to make the changes, according to the user's decisions, while warning if any information may be lost in the process. 
