@@ -14,9 +14,6 @@ Report with a checklist allowing me to accept, revert, give a short instruction 
 Wikaid utilizes Behavior-Driven Development (BDD) and a Sequential State Machine to ensure editorial precision. Each segment involves an initial Alignment Discussion to define scope, followed by Automated Execution with real-time user input as needed.
 
 # Program Flow
-## Project Flow
-
-
 
 1. Wikaid's interface works through a natural language chat controlling the workflow. 
 
