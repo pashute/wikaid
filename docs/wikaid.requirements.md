@@ -27,7 +27,9 @@ best if as source code, and With the resulting report and user approval
 we should be able to reach the locations in the mediawiki and even inject the corrected text in its place.
 
 ### **Self aware discussion with accumulated state**
-At all times the state and its parameters (open and resolved issues, discussed and planned topics), user decisions and context (such as term changes) are accumulated and stored, creating a context aware conversation with the current state and passed states in mind, and with the knowledge of the planned topics, understanding where the conversation is going, and not forgetting or "losing the ball".  
+Each wikisite analysis request is called a project. The project has a site name (given after the scope is determined in the Input stage), which the user can change at any point and stage, and a timestamp of the date and time it was started. The projects history, including topics discussed, issues resolved or ignored and the resulting report and actions are saved. Each stage also has an errors list if any occured, stored with their severity. A project can be aborted and "cleared" if needed, and every module has a clear action (with a reason), by which it should start clean. 
+
+At all times the project's state and its parameters (open and resolved issues, discussed and planned topics), user decisions and context (such as term changes) are accumulated and stored, creating a context aware conversation with the current state and passed states in mind, and with the knowledge of the planned topics, understanding where the conversation is going, and not forgetting or "losing the ball".  
 
 ## Operational requirements summary
 ```
