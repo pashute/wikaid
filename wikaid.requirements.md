@@ -13,6 +13,9 @@ Wikaid is built as a **Chrome Extension** to provide native interaction with the
 ### **Monorepo**
 Managed via GitHub Codespaces using Gitflow and TDD. The project is split into two main packages, running simultaneously with concurrently.
 
+### **Side bar control**
+During the planning stages the sidebar has a chat interface which simulates (but is not) an AI agent chat, with a structured controlled interface, responding according to the stage and state of the conversation, notifying the user of state changes and planned topics, and interacting with the user's input, gathering instructions, confirming the analysis plan, reporting its findings, and finally approving and executing the changes to the site.  
+
 ### **Backend: wikaidBrain** - 
 The _Intelligence Center_ hosted in a **Docker container**.
    
