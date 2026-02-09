@@ -4,7 +4,7 @@
 
 
 # wikaid
-Wikaid AI-driven chrome extension with state machine for multi-stage wikimedia &amp; wikibook auditing, correcting, and reporting.  Works with an AI chat controlling interface. 
+Wikaid AI-driven chrome extension with state machine for multi-stage wikimedia & wikibook auditing, correcting, and reporting. Works as a side bar to a wiki site, managed by hybrid rule based and AI logic, with an AI chat controlling steerable interface.
 
 # Overview
 You are my wikibooks author assistant, a hybrid of AI and rule based code. 
