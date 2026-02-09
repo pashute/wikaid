@@ -1,8 +1,9 @@
-# features prototype 1 stage
+# features for prototype 1 
 
 | # | Pickled | Where | What | How (Test Focus / Details) |
 | :--- | :--- | :--- | :--- | :--- |
-| **1** | [ ] | Root | **Repo Structure** | Initialize monorepo according to the tree (to be supplied). |
+| **1a** | [ ] | Root | **Repo Structure** | Initialize monorepo according to the tree (to be supplied). |
+| **1b** | [ ] | Root | **Repo dependencies** | Initialize dependencies according to requirements (to be suppllied). |
 | **2** | [ ] | Side | **Side Framework** | React / Chrome Extension in TS; should provide native editor interaction. |
 | **3** | [ ] | Brain | **Brain Framework** | TS Hono with LangG/C, Supabase, and Ollama. |
 | **4** | [ ] | Root | **Mocking Environment** | Set up vitest/mocking environment for isolated component/module testing. |
@@ -16,8 +17,62 @@
 | **12** | [ ] | Side | **Chat UI: Controls** | Submit, Pause, Cancel, Edit. Verify button click changes state. |
 | **13** | [ ] | Brain | **Flow: Input1** | Controls discussion; connects Inputter and Responder for Input1 stage. |
 | **14** | [ ] | Brain | **Issues: Input1** | Params: 1. Wiki Area (Optional) 2. Wiki Scope (Blocking). |
-| **15** | [ ] | Brain | **Responder: Input1** | Suggest pages/sections if Area exists; handles error notifications via `clear`. |
+| **15** | [ ] | Brain | **Responder: Input1** | Suggest pages/sections if Area exists; |
+| **15b**| [ ] | Brain | **Responder: Input1 error** | handles error notifications via `clear`. |
 | **16** | [ ] | Brain | **Input1 Output** | Should produce resolved parameters in valid JSON format. |
+
+
+# list of missing requirement details for prototype 1 (no additional components yet)
+1. Tree
+```
+wikaid/
+├── packages/
+│   ├── docs / wikaid.requirements.md # this file
+│   ├── side/               # Wicked Side: Chrome Extension (React + Vite)
+│   │   ├── src/
+│   │   │   ├── background/ # Service worker for extension events
+│   │   │   ├── content/    # Content scripts (DOM injection)
+│   │   │   ├── sidebar/    # UI for the audit & discussion
+│   │   │   └── common/     # UI components
+│   │   └── package.json
+│   │
+│   ├── brain/              # wikaidBrain: LangGraph AI Orchestrator
+│   │   ├── src/
+│   │   │   ├── orchestrator/
+│   │   │   │   ├── discussion/
+│   │   │   │   │   ├── flow/      # Managing session state & history
+│   │   │   │   │   ├── topics/    # Segmenting the wikibook content
+│   │   │   │   │   ├── issues/    # Tracking detected problems
+│   │   │   │   │   ├── align/     # Detector and Aligner sub-modules
+│   │   │   │   │   ├── responder/ # Generating user-facing explanations
+│   │   │   │   │   └── executor/  # Finalizing approved changes
+│   │   │   │   └── stages/
+│   │   │   │       ├── input1/    # Wiki extraction & segmenting
+│   │   │   │       ├── ground2/   # Initial domain grounding
+│   │   │   │       ├── plan3/     # Planning the audit strategy
+│   │   │   │       ├── analyze4/  # Deep Audit Node:
+│   │   │   │       │   ├── accuracy/  # lingu, logic, src
+│   │   │   │       │   ├── structure/ # redundancy, organize
+│   │   │   │       │   └── expand/    # supplement, enrich
+│   │   │   │       ├── report5/   # Summarizing findings for side
+│   │   │   │       ├── approve6/  # Human-in-the-loop gate
+│   │   │   │       └── execute7/  # Pushing back to MediaWiki
+│   │   │   ├── knowledge/
+│   │   │   │   ├── tech/          # flash, llama, kg adapters
+│   │   │   │   └── bases/         # domain, discussion, lexicon, actions, revised
+│   │   │   └── index.ts    # Hono API entry point
+│   │   ├── tests/          # Vitest & Cucumber
+│   │   └── package.json
+│   │
+│   └── shared/             # Shared Logic & Contracts
+│       ├── src/
+│       │   ├── schema/     # Zod definitions for the 22-task mission
+│       │   └── types/      # Global Enums (e.g., a_rejected, a_aligned)
+│       └── package.json
+```
+
+   
+3. requirements
 
 
 # check these features where added to the feature file
