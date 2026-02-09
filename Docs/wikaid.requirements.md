@@ -110,6 +110,7 @@ backend_extensions:
 
 wikaid/
 ├── packages/
+│   ├── docs / wikaid.requirements.md # this file
 │   ├── side/               # Wicked Side: Chrome Extension (React + Vite)
 │   │   ├── src/
 │   │   │   ├── background/ # Service worker for extension events
