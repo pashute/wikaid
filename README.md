@@ -22,6 +22,10 @@ Wikaid is built as a **Chrome Extension** to provide native interaction with the
 * **Native Control:** `Chrome Content Scripts` (Direct cursor manipulation and text injection).
 * **Environment:** developed in `GitHub Codespaces` with `Gitflow` and `TDD`.
 
+### Project persistance
+
+Supabase db persistance as remote checkpointer for LangGraph.js state machine, ensuring that stage, phase and parameters gathered and planned are preserved when environment is restarted. 
+
 # Development Methodology
 Wikaid utilizes Behavior-Driven Development (BDD) and a Sequential State Machine to ensure editorial precision. 
 If possible we will use CL/CD  and E2E testing.  
