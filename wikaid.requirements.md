@@ -3,7 +3,7 @@
 **Description:** Created
 
 # wikaid requirements
-Wikaid AI-driven chrome extension with state machine for multi-stage wikimedia &amp; wikibook auditing, correcting, and reporting.  Works as a chrome extension with hybrid rule based and AI logic, with an AI chat controlling interface. 
+Wikaid AI-driven chrome extension with state machine for multi-stage wikimedia &amp; wikibook auditing, correcting, and reporting.  Works as a side bar to a wiki site, managed by hybrid rule based and AI logic, with an AI chat controlling steerable interface. 
 
 # 🛠 Technical Stack
 
@@ -201,6 +201,8 @@ Update object according to conclusions, and move on to next segment only after a
 During analysis we will receive a report of all changes, suggestions and remarks, and can then choose to relate to them, keep, revert, modify or discuss. 
 
 Before starting the user will be presented with a choice of analysis phases which they wish to include in the analysis. 
+
+The user can stop the abort the process and revert. 
 
 The following are the phases for the analysis:
 
