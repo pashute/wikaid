@@ -16,7 +16,9 @@ Report with a checklist allowing me to accept, revert, give a short instruction 
 Wikaid is built as a **Chrome Extension** to provide native interaction with the Wikibooks editor, through a chat in the sidebar.
 
 * **Orchestrator:** `LangGraph.js` (State machine managing discussion stages and phases, with AI and user interactions and interupts).
-* **Intelligence:** `Google Gemini 2.0 Flash` (Large context window for full-book analysis).
+* **Intelligence:** 
+- For chat and instructions (Local): Gemini Nano (Built-in Chrome API for cost-free, low-latency).
+- For book analysis (Cloud): Google Gemini 2.0 Flash (High-performance API, 1M+ token context reasoning).
 * **UI/UX:** `React` (Hosted in the **Chrome Side Panel** for persistent auditing).
 * **Database:** `Supabase` (Cloud PostgreSQL for report storage and state persistence).
 * **Native Control:** `Chrome Content Scripts` (Direct cursor manipulation and text injection).
