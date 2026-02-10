@@ -5,6 +5,22 @@
 # wikaid requirements
 Wikaid AI-driven chrome extension with state machine for multi-stage wikimedia &amp; wikibook auditing, correcting, and reporting.  Works as a side bar to a wiki site, managed by hybrid rule based and AI logic, with an AI chat controlling steerable interface. 
 
+## wikaid stages
+The wikaid process goes through 7 stages, each stage with several phases. Every stage ends with an alignment phase followed by an action phase. Each phase has an associated discussion which can span as many user-request / app-response iterations as desired. Passage between phases or phase segments is striclty after the user's ok to proceed. 
+
+- Stage 1. Input - Get scope and instructions from user. Goes to area suggests sections. Result: initial instructions as tasks
+- Stage 2. Ground - Get domain terminology and target site terminology, consolidate with user. Result: grounding lexicon
+- Stage 3. Plan - Decide which kinds of analysis to do 
+
+
+The initial message. 
+-   Welcome to wikaid - your personal automated wiki assistant.   
+-   The wikaid process has 7 stages. Input, Grounding, Plan, Report, Approve, Fix.
+-   Each stage has its discussion until everything is clear and you wish to proceed.
+-   Each stage ends with its main action.
+-   Before the main action, we hold an alignment session with you to clarify and confirm our information and plan, and recieve your ok to proceed. 
+
+
 # 🛠 Technical Stack
 
 Wikaid is built as a **Chrome Extension** to provide native interaction with the Wikibooks editor, through a chat in the sidebar.
@@ -14,15 +30,20 @@ Wikaid is built as a **Chrome Extension** to provide native interaction with the
 Managed via GitHub Codespaces using Gitflow and TDD. The project is split into two main packages, running simultaneously with concurrently.
 
 ### **Side bar control**
-During the planning stages the sidebar has a chat interface which simulates (but is not) an AI agent chat, with a structured controlled interface, responding according to the stage and state of the conversation, notifying the user of state changes and planned topics, and interacting with the user's input, gathering instructions, confirming the analysis plan, reporting its findings, and finally approving and executing the changes to the site.  
+The app's user interface is a sidebar chat. It behaves like an agent bot, but in fact is run by a unique hybrid AI and rule-based algorithm system. The user's input and the app's self-aware output are given in natural language in the chat. The user's alignment is constantly seeked and the app is responsive to the users' requests, allowing them to steer the app. 
+
+The structured discussion follows guidelines, gathering desired input from the user and accumulating the parameters - the important parts of the requests and responses which the app is interested in. The discussion is lead through the hy6s and their phases. 
+
+The wikaid sidebar responds according to the stage and state of the conversation, notifying the user of state changes and planned topics, and interacting with the user's input, gathering instructions, confirming the analysis plan, reporting its findings, and finally approving and executing the changes to the wiki site.  
 
 ### **AI offload and hybrid computing** 
-The wikaid program saves the access to a large and capable (and expensive) LLM for the big analysis job, minimizing any interaction with it until necessary. For the long and detailed preparation process it uses a local LLM. 
+To ensure cost-efficiency and performance, the wikaid architecture offloads the extensive preparation and grounding tasks to a local LLM, strictly reserving the high-capacity (and expensive) global LLM for the initial grounding knowledge builder, and for the final, critical analysis phase. By minimizing external API calls during the iterative data-gathering process, the system remains lean and avoids unnecessary overhead
 
-Even this local LLM (or SLM) is used as a component in logical action sequences, controlled by rule-based programming in the backend (brain) orchestrator, run with LangChain/LangGraph. 
+Even the local LLM (or SLM) is used only as a component in logical action sequences, controlled by rule-based programming in the backend (brain) orchestrator, which maintains a state machine using LangChain/LangGraph. 
 
-#### **Dynamic workflow**
-There is one single zzz
+#### **Dynamic workflow** - The Dynamait (Dynamic AI tool) system
+Although the request reader, the response writer, and the actions run zzz
+
 The ```runner``` object (in the orchestrator folder)
 
 ### **Mediawiki integration**
@@ -231,17 +252,19 @@ The parameters are gathered from the user input during the discussions, from the
    - **Stage states:**  1.Input, 2.Ground, 3.Plan 4.Analyze, 5.Report, 6.Approve, 7.Action
    - **Phase states** (within each stage): See the stage details. 
    - **Alignment state:** 1.```talking``` - active listening , 2.```align``` - suggest alignment, 3.```aligning``` - in alignment session, 4. ```aligned``` - alignment accepted and ok to proceed.
-   - ***Discussion flow object:***  The orchestrator manages the discussion using discussion flow data of ```discussed```, ```current``` and ```planned``` ```topic```s to be discussed.  The discussion flow is with planned topics and agreeing on the current topic is discussed during the alignment. 
-
-   - Note: If the user requests to return to a discussion while ```aligning``` or after ```aligned``` the system goes back to ```talking``` state. 
+   - ***Flow module (discussion flow object):***  The Dynamait (dynamic AI tool) responder module, loaded (by the ```stager``` module) with the current stages' tasks, manages the discussion, assisted by the correctly loaded ```flow``` module, that holds the discussion-flow data: The default discussion plan for this stage (```planned topics``` to be discussed), the ```current topic``` being discussed now (initially, the default topic set for this stage, but the user may choose to discuss something else) and the list of topics to be discussed.
+ 
+   For certain stages or phases  the responder's topic may be "locked" in which case until the required parameters are supplied no other discussion is allowed, and planned topics and current topic will not change in the ```flow``` module. 
+   
+   The flow module also holds previously discussed topics, for context. In a locked flow, the topics from previous phases or stages are persisted in the database but not available in the immediate object's scope. 
+   
+   During the alignment phase of a stage with open discussions, the names of the current topic and of the planned topics can be discussed and changed. See next section about the alignment-discussion and the detailed discussion in that phase in section #2.1. 
 
 1.5.5 ***Alignment discussion phase:*** (for each stage) 
 
 Each stage and substage ends with an alignment phase: A summary of what will be next, probes for gaps of information still needed from the user, and a request for permission to proceed to the next stage. (ok?,  continue?  etc.) 
 
 Once in alignment session, the orchestrator's ***alignment*** module takes over and begins preparing and presenting the alignment steps, gathering the information and updating the other modules. the result is an alignment object used by the ***responder*** module to communicate with the user,  and by the **issues** and **topics** modules to update their information. See section 2.1 alignment details
-
-
 
 1.3 ***Input stage:***  The analysis scope, general plan and extra instructions are received through a structured discussion. Once all the plan parameters  are gathered, a parameters json is given and if the user approves we begin the analysis and suggestion stage. 
 
@@ -265,21 +288,22 @@ The alignment phase is entered at the end of each segment and stage, summarizing
 2.1.1 **Orchestrator Alignment module** 
 The alignment session is entered after a suggestion by the ```responder``` according to the ```Align detector```. 
 
-Once in the alignment session, it is managed by the ```alignment``` orchestrator module, working along with the ```issues```, ```topics```, and ```flow``` modules (which gather and manage the open issues, the topics being discussed and the discussion flow),   and the ```responder``` module (which holds the instructions for preparing the words to respond to the user (with questions alongside the information). 
+Once in the alignment session phase, it is managed by the ```alignment``` orchestrator module, working along with the ```issues```, ```topics```, and ```flow``` modules (which gather and manage the open issues, the topics being discussed and the discussion flow),   and the ```responder``` module (which holds the instructions for preparing the words to respond to the user (with questions alongside the information). 
 
 2.1.2 The alignment session always includes  
 - aligning the summary of what was done
 - aligning the current topic name, and planned topic names 
 - aligning of the parameters that were resolved or are planned to be discussed
 - aligning of the issues still  left open
-
-During the discussion with the user, the ```responder``` module uses subtle probes, without mentioning the alignment process or even the word alignment, and without adding any unnecessary or blatant questions.
+   
+During the discussion with the user, the ```responder``` module uses subtle probes, without mentioning the alignment process or even the word alignment, and without adding any unnecessary or blatant questions. This is accomplished using some examples in the instructions prompt. 
 
 - If remarks were given and there is no approval to proceed, the alignment state remains ```aligning```, and waits for the issues to be resolved and the user to approve, before moving on.
+  
 - The pending "parameters" field for the stage is updated with the issues needing resolution, or if not known a general "get issues from user" parameter is added. 
 
 2.1.2 ***Alignment state:***  Every stage phase and segment has an alignment-state ("flag")
-- ```talking``` - active listening stage. No summary yet. Parameters are being accumulated in the phase's information store (lexicon), by topic. This is the state at the beginning of a segment, phase or stage. This state is returned to from ```aligning``` if the user wishes to leave the alignment and go back to the discussion. 
+- ```talking``` - active listening stage. No final summary yet. Parameters are being accumulated in the phase's information store (lexicon), by topic. This is the state at the beginning of a segment, phase or stage. This state is returned to from ```aligning``` if the user wishes to leave the alignment and go back to the discussion. 
 - ```align``` - topic ended. alignment suggestion is needed. 
 - ```aligning``` - alignment suggestion was accepted. We are now in an alignment discussion.
 - ```aligned``` - user accepted the alignment and asked to proceed. plans and phase 
