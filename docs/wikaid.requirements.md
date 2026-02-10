@@ -21,6 +21,10 @@ The wikaid program saves the access to a large and capable (and expensive) LLM f
 
 Even this local LLM (or SLM) is used as a component in logical action sequences, controlled by rule-based programming in the backend (brain) orchestrator, run with LangChain/LangGraph. 
 
+#### **Dynamic workflow**
+There is one single zzz
+The ```runner``` object (in the orchestrator folder)
+
 ### **Mediawiki integration**
 For creating the report there must be at least the ability to read the wiki text, 
 best if as source code, and With the resulting report and user approval 
@@ -113,39 +117,39 @@ backend_extensions:
 wikaid/
 ├── packages/
 │   ├── docs / wikaid.requirements.md # this file
-│   ├── side/               # Wicked Side: Chrome Extension (React + Vite)
+│   ├── side/                 # Wicked Side: Chrome Extension (React + Vite)
 │   │   ├── src/
-│   │   │   ├── config/     # side.config.yaml
-│   │   │   ├── background/ # Service worker for extension events
-│   │   │   ├── content/    # Content scripts (DOM injection)
-│   │   │   ├── sidebar/    # UI for the audit & discussion
-│   │   │   └── common/     # UI components
+│   │   │   ├── config/       # side.config.yaml
+│   │   │   ├── background/   # Service worker for extension events
+│   │   │   ├── content/      # Content scripts (DOM injection)
+│   │   │   ├── sidebar/      # UI for the audit & discussion
+│   │   │   └── common/       # UI components
 │   │   └── package.json
 │   │
-│   ├── brain/              # wikaidBrain: LangGraph AI Orchestrator
+│   ├── brain/                # wikaidBrain: LangGraph AI Orchestrator
 │   │   ├── src/
-│   │   │   ├── config /    # brain.config.yaml, prompts.yaml
-│   │   │   ├── orchestrator/
+│   │   │   ├── config /      # brain.config.yaml, prompts.yaml
+│   │   │   ├── orchestrator/ # modules: orchestrator, requester, responder, runner
 │   │   │   │   ├── discussion/
 │   │   │   │   │   ├── flow/      # Managing session state & history
 │   │   │   │   │   ├── topics/    # Segmenting the wikibook content
 │   │   │   │   │   ├── issues/    # Tracking detected problems
 │   │   │   │   │   ├── align/     # Detector and Aligner sub-modules
 │   │   │   │   │   └── executor/  # Finalizing approved changes
-│   │   │   │   └── stages/ # each with requester.num and responder.num 
+│   │   │   │   └── stages/ 
 │   │   │   │       ├── input.1/    # Wiki extraction & segmenting
 │   │   │   │       ├── ground.2/   # Initial domain grounding
 │   │   │   │       ├── plan.3/     # Planning the audit strategy
 │   │   │   │       ├── analyze.4/  # Deep audit 
-│   │   │   │       │   ├── accuracy/  # lingu, logic, src
-│   │   │   │       │   ├── structure/ # redundancy, organize
-│   │   │   │       │   └── expand/    # supplement, enrich
-│   │   │   │       ├── report.5/   # Summarizing findings for side
-│   │   │   │       ├── approve.6/  # Human-in-the-loop gate
-│   │   │   │       └── execute.7/  # Pushing back to MediaWiki
+│   │   │   │       │   ├── accuracy/    # lingu, logic, src
+│   │   │   │       │   ├── structure/   # redundancy, organize
+│   │   │   │       │   └── expand/      # supplement, enrich
+│   │   │   │       ├── report.5/     # Summarizing findings for side
+│   │   │   │       ├── approve.6/    # Human-in-the-loop gate
+│   │   │   │       └── execute.7/    # Pushing back to MediaWiki
 │   │   │   ├── knowledge/
-│   │   │   │   ├── tech/          # adapters for flash, llama, embedded kg, config 
-│   │   │   │   └── bases/         # domain, lexicon, actions, revised, history
+│   │   │   │   ├── tech/   # adapters for flash, llama, embedded kg, config 
+│   │   │   │   └── bases/  # domain, lexicon, actions, revised, history
 │   │   │   └── index.ts    # Hono API entry point
 │   │   ├── tests/          # Vitest & Cucumber
 │   │   └── package.json
@@ -166,7 +170,49 @@ Wikaid's interface works through a ***natural language chat*** controlling the w
 
 1.2 ***Stages and Phases:*** Each discussion is part of a stage, and its phases.
 
-1.3 ***Discussion flow and state:*** The stage and phase along with the required parameters to be aquired are managed in the orchestrator's state machine. See details of discussion flow and the **topics** module.  
+1.3 ***Discussion flow and state:*** The stage and phase is managed in the ```orchestrator``` module. 
+
+1.3.1 **Stager module:** During stage change, the orchestrator invokes the ```stager``` module, which loads the phase changes and the dynamic workflows into the "dynamait" (dynamic AI tool) modules: These modules are set with the workflow they need to pass through for each phase of the stage, what modules are they connected to and what they should supply to and/or recieve from them, and how. 
+
+The workflow is a list of parametrized tasks, some of which are dynamic AI prompts, others are dynamic tasks, that include rule based "tools" and their parameters. 
+
+The "dynamait" modules are:
+- The ```requester``` module:  takes care of reading the user's text, reading and updating the proper info modules and performing post request actions like verification, resolved issue merging, or new topics analysis. 
+- The ```responder```: works closely with the ```flow``` to give relevant responses during each iteration, directing the discussion to stay on track and gather the needed parametric information, using subtle probes.
+- The ```runner```:  runs the stage's action phases according to the phase and to the loaded instructions from the stager.
+- 
+The "info" modules are, also initialized with each stage change by the ```stager``` module are: 
+- ```issues``` for parameter resolutions.
+- ```topics``` for the discussed topic names and definitins
+- - ```flow``` for the discussed, planned, and current topics
+- ```history``` holds the changes to issues, topis and flow, per project.
+  Note:  history has an ```immediate``` field for current info, at hand.   
+
+
+The workflow configuration for each dynamait module and for each stage, is stored mainly in src/config/stage.config.yaml. 
+
+Sample configuration:
+{ stage: input, phases: [
+  { phase: scope, tasks: [
+        {task: setup, tool: setRequester, params: [
+          {param: issues, values: [
+            {issue: get-area, importance: ignore}, 
+            {issue: get-scope, importance: blocking} 
+          ]}, 
+          {param: topics, values: [
+            topic: wikibook {{bookname}} improve, 
+            topic: wikibook analysis 
+          ]}
+        ]},
+        {task: suggest-scope-pages, tool: websearch, params: [
+            param: focus, values: [pagenames namespace, chapter]}
+  ]
+}
+
+- The ```issues``` module - holds the parameters of importance, to be searched for and resolved during the stage's discussion in its different phases. 
+```requester``` module - takes care of reading the user's inputs during this stage's iterations, and accumulating the important parameters during the stage's phases and segments.
+- The ```responder``` - takes care of "self aware" reading of the responses given. The response is a result of various actions taken by the responder 
+- along with the required parameters to be aquired are managed in the orchestrator's state machine. See details of discussion flow and the **topics** module.  
 
 1.4 **Constant allignment:**  The discussion is constantly aligning with the user, via active listening methods, but at the end of each segment there is a methodical stop for alignment, before proceeding. This alignment session for each stage and segment is managed by the orchestrator state machine as well, with dedicated modules for moving it through the alignment process. (modules: topics, issues, (discussion) flow, alignment manager)
 
