@@ -115,6 +115,7 @@ wikaid/
 │   ├── docs / wikaid.requirements.md # this file
 │   ├── side/               # Wicked Side: Chrome Extension (React + Vite)
 │   │   ├── src/
+│   │   │   ├── config/     # side.config.yaml
 │   │   │   ├── background/ # Service worker for extension events
 │   │   │   ├── content/    # Content scripts (DOM injection)
 │   │   │   ├── sidebar/    # UI for the audit & discussion
@@ -123,19 +124,19 @@ wikaid/
 │   │
 │   ├── brain/              # wikaidBrain: LangGraph AI Orchestrator
 │   │   ├── src/
+│   │   │   ├── config /    # brain.config.yaml, prompts.yaml
 │   │   │   ├── orchestrator/
 │   │   │   │   ├── discussion/
 │   │   │   │   │   ├── flow/      # Managing session state & history
 │   │   │   │   │   ├── topics/    # Segmenting the wikibook content
 │   │   │   │   │   ├── issues/    # Tracking detected problems
 │   │   │   │   │   ├── align/     # Detector and Aligner sub-modules
-│   │   │   │   │   ├── responder/ # Generating user-facing explanations
 │   │   │   │   │   └── executor/  # Finalizing approved changes
-│   │   │   │   └── stages/
-│   │   │   │       ├── input1/    # Wiki extraction & segmenting
-│   │   │   │       ├── ground2/   # Initial domain grounding
-│   │   │   │       ├── plan3/     # Planning the audit strategy
-│   │   │   │       ├── analyze4/  # Deep Audit Node:
+│   │   │   │   └── stages/ # each with requester.num and responder.num 
+│   │   │   │       ├── input.1/    # Wiki extraction & segmenting
+│   │   │   │       ├── ground.2/   # Initial domain grounding
+│   │   │   │       ├── plan.3/     # Planning the audit strategy
+│   │   │   │       ├── analyze.4/  # Deep audit 
 │   │   │   │       │   ├── accuracy/  # lingu, logic, src
 │   │   │   │       │   ├── structure/ # redundancy, organize
 │   │   │   │       │   └── expand/    # supplement, enrich
@@ -143,8 +144,8 @@ wikaid/
 │   │   │   │       ├── approve6/  # Human-in-the-loop gate
 │   │   │   │       └── execute7/  # Pushing back to MediaWiki
 │   │   │   ├── knowledge/
-│   │   │   │   ├── tech/          # flash, llama, kg adapters
-│   │   │   │   └── bases/         # domain, discussion, lexicon, actions, revised
+│   │   │   │   ├── tech/          # adapters for flash, llama, embedded kg, config 
+│   │   │   │   └── bases/         # domain, lexicon, actions, revised, history
 │   │   │   └── index.ts    # Hono API entry point
 │   │   ├── tests/          # Vitest & Cucumber
 │   │   └── package.json
@@ -284,27 +285,27 @@ Update object according to conclusions, and move on to next segment only after a
 ## 2.3 Analysis-plan stage details
 During analysis we will receive a report of all changes, suggestions and remarks, and can then choose to relate to them, keep, revert, modify or discuss. 
 
-Before starting the user will be presented with a choice of analysis phases which they wish to include in the analysis. 
+Before starting the users will be presented with a choice of analysis phases which they wish to include in the analysis. 
 
-The user can stop the abort the process and revert. 
+The user can stop, pause, or abort the process and revert to the last working state. 
 
 The following are the phases for the analysis:
 
-### **1. Content Integrity & Accuracy**
+### **2.4.1. Content Integrity & Accuracy**
 
-#### **1.1 Linguistic Audit**
+#### **..1.1 Linguistic Audit**
 1. **Spelling:** Detect and fix standard spelling mistakes.
 2. **Grammar:** Detect and fix grammatical errors.
 3. **Clarity:** Improve sentence structure for better readability.
 4. **Flow:** Enhance the logical transition between sentences and paragraphs.
 5. **Style:** Change writing style according to instructions
 
-#### **1.2 Logic & Consistency**
+#### **..1.2 Logic & Consistency**
 6. **Logical Verification:** Identify failed logic or contradictory statements.
 7. **Inconsistency Detection:** Identify internal discrepancies in data or claims.
 8. **Terminology Alignment:** Ensure consistent use of terms throughout the book.
 
-#### **1.3 Source Validation**
+#### **..1.3 Source Validation**
 9. **Fact-Checking:** Verify that external sources support the claims made.
 10. **Source Verification:** Check that sources actually say what is specifically claimed.
 11. **Link Audit:** Detect and fix broken URLs.
@@ -313,27 +314,39 @@ The following are the phases for the analysis:
 
 ---
 
-### **2. Structural Architecture**
+### **2.4.2. Structural Architecture**
 
-#### **2.1 Redundancy Management**
+#### **..2.1 Redundancy Management**
 14. **Duplicate Detection:** Find repeated sections across pages.
 15. **Redundancy Identification:** Find redundant information that adds no value.
 16. **Error Pruning:** Identify and remove objectively "wrong" sections.
 
-#### **2.2 Organizational Strategy**
+#### **..2.2 Organizational Strategy**
 17. **Topic Separation:** Suggest splitting over-encumbered pages into smaller topics.
 18. **Page Merging:** Suggest combining thin pages.
 19. **Structural Merging:** Suggest combining highly related pages for better cohesion.
 
 ---
 
-### **3. Expansion & Enrichment**
+### **2.4.3 Expansion & Enrichment**
 
-#### **3.1 Content Supplementation**
+#### **..3.1 Content Supplementation**
 20. **Smart Completions:** Suggest missing information in a chapter.
 21. **Next Step Suggestions:** Identify and suggest "next steps" for the learner.
 
-#### **3.2 Enrichment**
+#### **..3.2 Enrichment**
 22. **Further Reading Generation:** Create dedicated "Further Reading" sections.
 23. **Link Supplementation:** Suggest relevant external links for deeper study.
+
+## **2.5 Change execution stage**
+Once the analysis report has been resolved we can continue to actually make the changes. This can be automated, or, if that is not possible or not desired, done as an assisted step by step manual process, where wikaid leads the user to the location with instructions, and with the corrected text selected in the clipboard, it is then replaced manually by selecting the text to be changed and pasting onto it or replacing it. 
+
+# Data structures and data modules  
+There is data in each of the inforation modules: issues, topics, flow. There is embedded (vectorized) data in the ground once it has finished ground stage, and there is project history in the project object. The user has a persona object which has a lexicon of user terms by role and domain, a history of topics discussed,  associated domains of knowledge, lists of related links, with their significance, and lists of "negativity" - words and phrases not to be included with a term or phrase, each negative hint, comes with its explanation (antonym, homonym but for different field etc.)
+
+There are data adapters for connecting storing reteiving and modifying the information in the database and in the knowledge bases (knowledge bases are  are a set of embedded knowledge graphs.)  The adapters are: supabase, kg. They use ollama code. 
+
+There are two AI adapters for accessing the local and cloud AI. 
+
+There is a prompt manager in the knowledge base which reads the prompts.yaml file 
 
