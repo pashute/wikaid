@@ -140,9 +140,9 @@ wikaid/
 │   │   │   │       │   ├── accuracy/  # lingu, logic, src
 │   │   │   │       │   ├── structure/ # redundancy, organize
 │   │   │   │       │   └── expand/    # supplement, enrich
-│   │   │   │       ├── report5/   # Summarizing findings for side
-│   │   │   │       ├── approve6/  # Human-in-the-loop gate
-│   │   │   │       └── execute7/  # Pushing back to MediaWiki
+│   │   │   │       ├── report.5/   # Summarizing findings for side
+│   │   │   │       ├── approve.6/  # Human-in-the-loop gate
+│   │   │   │       └── execute.7/  # Pushing back to MediaWiki
 │   │   │   ├── knowledge/
 │   │   │   │   ├── tech/          # adapters for flash, llama, embedded kg, config 
 │   │   │   │   └── bases/         # domain, lexicon, actions, revised, history
@@ -342,11 +342,22 @@ The following are the phases for the analysis:
 Once the analysis report has been resolved we can continue to actually make the changes. This can be automated, or, if that is not possible or not desired, done as an assisted step by step manual process, where wikaid leads the user to the location with instructions, and with the corrected text selected in the clipboard, it is then replaced manually by selecting the text to be changed and pasting onto it or replacing it. 
 
 # Data structures and data modules  
-There is data in each of the inforation modules: issues, topics, flow. There is embedded (vectorized) data in the ground once it has finished ground stage, and there is project history in the project object. The user has a persona object which has a lexicon of user terms by role and domain, a history of topics discussed,  associated domains of knowledge, lists of related links, with their significance, and lists of "negativity" - words and phrases not to be included with a term or phrase, each negative hint, comes with its explanation (antonym, homonym but for different field etc.)
+There is data in each of the inforation modules: ```issues, topics, flow```. 
+
+There is a history module that stores the current project's accumulated resolved issues and topics discussed, analysis report and change log, along with its history of state changing. Each node is under a timestamped stage's phase change. 
+
+There is embedded (vectorized) data in the ```ground``` module, once it has finished the ground stage. 
+
+The user has a persona object which has a lexicon of user terms by role and domain, a history of topics discussed,  associated domains of knowledge, lists of related links, with their significance, and lists of "negativity" - words and phrases not to be included with a term or phrase, each negative hint, comes with its explanation (antonym, homonym but for different field etc.)  This is updated at every stage's phase change. 
 
 There are data adapters for connecting storing reteiving and modifying the information in the database and in the knowledge bases (knowledge bases are  are a set of embedded knowledge graphs.)  The adapters are: supabase, kg. They use ollama code. 
 
 There are two AI adapters for accessing the local and cloud AI. 
 
-There is a prompt manager in the knowledge base which reads the prompts.yaml file 
+Future feature:  If the data becomes large, the history object can hold the current state's data in memory for immediate access, and  the rest can be stored in the database. 
+
+There is a prompt manager in the knowledge base which reads the prompts.yaml file, for constructing the different module tools according to the needs. 
+
+There is a tools manager in the knowledge base which can extract a tool and dynamically set the code for running it. 
+
 
